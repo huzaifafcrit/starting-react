@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import Button from '@mui/material/Button';
-import CloseIcon from '@mui/icons-material/Close'
+import CloseIcon from '@mui/icons-material/Close';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 import './App.css';
 
 // components
@@ -64,8 +66,8 @@ PokemonInfo.propTypes = {
   onClose: PropTypes.func
 }
 
-const PokemonTableComponent = ({ ThreeColumnsTableContainer, pokemons, setSelectedItem, setExpanded }) => (
-  pokemons && pokemons.length > 0 ?
+const PokemonTableComponent = ({ ThreeColumnsTableContainer, pokemons, setSelectedItem, setExpanded, loading }) => (
+  !loading && pokemons && pokemons.length > 0 ?
     <ThreeColumnsTableContainer>
       <table width="100%" id="pokemon_table">
         <thead>
@@ -90,7 +92,13 @@ const PokemonTableComponent = ({ ThreeColumnsTableContainer, pokemons, setSelect
     </ThreeColumnsTableContainer> :
     <ThreeColumnsTableContainer>
       <div style={{padding: "1px"}}>
-        No pokemons found...
+      {loading ? (
+                  <LoadingSpinner>
+                    <Box sx={{ display: 'flex' }}>
+                      <CircularProgress />
+                    </Box>
+                  </LoadingSpinner>
+                  ) : 'No pokemons found...'}
       </div>
     </ThreeColumnsTableContainer>
 );
@@ -121,6 +129,13 @@ const ThreeColumnsTableCellRight = styled.td`
   width: 33.33%;
   text-align: right;
 `;
+const LoadingSpinner = styled.div`
+  display: flex;
+  width: 100%;
+  height: 80vh;
+  justify-content: center;
+  align-items: center;
+`;
 
 function App() {
 
@@ -128,6 +143,7 @@ function App() {
   const [getSearch, setSearch] = React.useState("");
   const [selectedItem, setSelectedItem] = React.useState("");
   const [expanded, setExpanded] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
 
   const ThreeColumnsTableContainer = styled.div`
     display: block;
@@ -139,7 +155,10 @@ function App() {
   React.useEffect(() => {
     fetch("../starting-react/pokemons.json")
       .then(res => res.json())
-      .then(pokemons => setPokemons(pokemons));
+      .then(pokemons => setPokemons(pokemons))
+      .then(() => setTimeout(() => {
+        setLoading(false);
+      }, 800));
   }, []);
 
   return (
@@ -160,6 +179,7 @@ function App() {
           )}
         setSelectedItem={setSelectedItem}
         setExpanded={setExpanded}
+        loading={loading}
       />
 
       {selectedItem && <PokemonInfo {...selectedItem} onClose={() => { setSelectedItem(null); setExpanded(false); }} />}
