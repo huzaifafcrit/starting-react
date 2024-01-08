@@ -5,6 +5,20 @@
 th {
   text-align: left;
   font-size: large;
+  width: 33.33%;
+}
+
+tr {
+  width: 33.33%;
+}
+
+td:nth-child(3) {
+  text-align: right;
+}
+
+td button {
+  width: 70%;
+  cursor: pointer;
 }
 
 input {
@@ -12,4 +26,11 @@ input {
   padding: 5px;
   font-size: medium;
   margin-bottom: 1rem;
+}
+
+.btn_close {
+  margin-top: 1rem;
+  padding: 5px;
+  width: 150px;
+  cursor: pointer;
 }
