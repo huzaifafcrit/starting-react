@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
+import Button from '@mui/material/Button';
+import CloseIcon from '@mui/icons-material/Close'
 import './App.css';
 
 // components
@@ -9,7 +11,7 @@ const PokemonRow = ({ pokemon, onSelect }) => (
     <ThreeColumnsTableCell>{pokemon.name.english}</ThreeColumnsTableCell>
     <ThreeColumnsTableCell>{pokemon.type.join(', ')}</ThreeColumnsTableCell>
     <ThreeColumnsTableCellRight>
-      <TableButton onClick={() => onSelect(pokemon)}>Details</TableButton>
+      <Button variant="contained" size="small" onClick={() => onSelect(pokemon)}>Details</Button>
     </ThreeColumnsTableCellRight>
   </tr>);
 
@@ -36,10 +38,14 @@ const PokemonInfo = ({ name, base, onClose }) => (
         ))}
       </tbody>
     </table>
-    <CloseButton
+    <br/>
+    <Button 
+      variant="outlined"
+      size="small"
+      startIcon={<CloseIcon />}
       onClick={onClose && (() => onClose())}>
         Close
-    </CloseButton>
+    </Button>
   </div>
 );
 
