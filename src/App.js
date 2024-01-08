@@ -46,6 +46,7 @@ const PokemonInfo = ({ name, base, onClose }) => (
       onClick={onClose && (() => onClose())}>
       Close
     </Button>
+    <br/>
   </div>
 );
 
@@ -89,7 +90,7 @@ const PokemonTableComponent = ({ ThreeColumnsTableContainer, pokemons, setSelect
     </ThreeColumnsTableContainer> :
     <ThreeColumnsTableContainer>
       <div style={{padding: "1px"}}>
-        No pokemons found that match your search input...
+        No pokemons found...
       </div>
     </ThreeColumnsTableContainer>
 );
@@ -132,7 +133,7 @@ function App() {
     display: block;
     overflow-y: auto;
     width: 100%;
-    height: ${expanded ? '53vh' : 'calc(100vh - 134px)'};
+    height: ${expanded ? 'calc(100vh - 150px - 280px)' : 'calc(100vh - 134px)'};
   `;
 
   React.useEffect(() => {
