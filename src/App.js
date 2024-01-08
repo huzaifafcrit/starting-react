@@ -38,13 +38,13 @@ const PokemonInfo = ({ name, base, onClose }) => (
         ))}
       </tbody>
     </table>
-    <br/>
-    <Button 
+    <br />
+    <Button
       variant="outlined"
       size="small"
       startIcon={<CloseIcon />}
       onClick={onClose && (() => onClose())}>
-        Close
+      Close
     </Button>
   </div>
 );
@@ -62,6 +62,37 @@ PokemonInfo.propTypes = {
   }),
   onClose: PropTypes.func
 }
+
+const PokemonTableComponent = ({ ThreeColumnsTableContainer, pokemons, setSelectedItem, setExpanded }) => (
+  pokemons && pokemons.length > 0 ?
+    <ThreeColumnsTableContainer>
+      <table width="100%" id="pokemon_table">
+        <thead>
+          <tr>
+            <ThreeColumnsTableHeader>Name</ThreeColumnsTableHeader>
+            <ThreeColumnsTableHeader>Type</ThreeColumnsTableHeader>
+          </tr>
+        </thead>
+        <tbody style={{ overflowY: "auto", height: "70px" }}>
+          {
+            pokemons
+              .map((pokemon) => (
+                <PokemonRow
+                  pokemon={pokemon}
+                  key={pokemon.id}
+                  onSelect={(pokemon) => { setSelectedItem(pokemon); setExpanded(true); }}
+                />
+              ))
+          }
+        </tbody>
+      </table>
+    </ThreeColumnsTableContainer> :
+    <ThreeColumnsTableContainer>
+      <div style={{padding: "1px"}}>
+        No pokemons found that match your search input...
+      </div>
+    </ThreeColumnsTableContainer>
+);
 
 // styles
 const Container = styled.div`
@@ -89,23 +120,20 @@ const ThreeColumnsTableCellRight = styled.td`
   width: 33.33%;
   text-align: right;
 `;
-const TableButton = styled.button`
-  width: 70%;
-  cursor: pointer;
-`;
-const CloseButton = styled.button`
-  margin-top: 1rem;
-  padding: 5px;
-  width: 150px;
-  cursor: pointer;
-`;
-
 
 function App() {
 
   const [pokemons, setPokemons] = React.useState([]);
   const [getSearch, setSearch] = React.useState("");
   const [selectedItem, setSelectedItem] = React.useState("");
+  const [expanded, setExpanded] = React.useState(false);
+
+  const ThreeColumnsTableContainer = styled.div`
+    display: block;
+    overflow-y: auto;
+    width: 100%;
+    height: ${expanded ? '53vh' : 'calc(100vh - 134px)'};
+  `;
 
   React.useEffect(() => {
     fetch("http://localhost:3000/starting-react/pokemons.json")
@@ -121,33 +149,19 @@ function App() {
         onChange={(event) => setSearch(event.target.value)}
         placeholder='Search for a pokemon...'
       />
-      <table width="100%">
-        <thead>
-          <tr>
-            <ThreeColumnsTableHeader>Name</ThreeColumnsTableHeader>
-            <ThreeColumnsTableHeader>Type</ThreeColumnsTableHeader>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            pokemons
-              .slice(0, 15)
-              .filter((pokemon) =>
-                pokemon.name.english.toLowerCase()
-                  .includes(getSearch.toLowerCase())
-              )
-              .map((pokemon) => (
-                <PokemonRow
-                  pokemon={pokemon}
-                  key={pokemon.id}
-                  onSelect={(pokemon) => setSelectedItem(pokemon)}
-                />
-              ))
-          }
-        </tbody>
-      </table>
 
-      {selectedItem && <PokemonInfo {...selectedItem} onClose={() => { setSelectedItem(null) }} />}
+      <PokemonTableComponent
+        ThreeColumnsTableContainer={ThreeColumnsTableContainer}
+        pokemons={pokemons
+          .filter((pokemon) =>
+            pokemon.name.english.toLowerCase()
+              .includes(getSearch.toLowerCase())
+          )}
+        setSelectedItem={setSelectedItem}
+        setExpanded={setExpanded}
+      />
+
+      {selectedItem && <PokemonInfo {...selectedItem} onClose={() => { setSelectedItem(null); setExpanded(false); }} />}
 
     </Container>
   );
