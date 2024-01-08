@@ -1,14 +1,16 @@
-import PropTypes from 'prop-types';
-import './App.css';
 import React from 'react';
+import PropTypes from 'prop-types';
+import styled from '@emotion/styled';
+import './App.css';
 
+// components
 const PokemonRow = ({ pokemon, onSelect }) => (
   <tr>
-    <td>{pokemon.name.english}</td>
-    <td>{pokemon.type.join(', ')}</td>
-    <td>
-      <button onClick={() => onSelect(pokemon)}>Details</button>
-    </td>
+    <ThreeColumnsTableCell>{pokemon.name.english}</ThreeColumnsTableCell>
+    <ThreeColumnsTableCell>{pokemon.type.join(', ')}</ThreeColumnsTableCell>
+    <ThreeColumnsTableCellRight>
+      <TableButton onClick={() => onSelect(pokemon)}>Details</TableButton>
+    </ThreeColumnsTableCellRight>
   </tr>);
 
 PokemonRow.propTypes = {
@@ -23,18 +25,21 @@ PokemonRow.propTypes = {
 
 const PokemonInfo = ({ name, base, onClose }) => (
   <div>
-    <h3 style={{margin: "1rem 0"}}>{name.english}</h3>
-    <table style={{width: "-webkit-fill-available"}}>
+    <h3 style={{ margin: "1rem 0" }}>{name.english}</h3>
+    <table style={{ width: "-webkit-fill-available" }}>
       <tbody>
         {Object.keys(base).map((key) => (
           <tr key={key}>
-            <td style={{width: "50%"}}>{key}</td>
-            <td style={{width: "50%", textAlign: "right"}}>{base[key]}</td>
+            <td style={{ width: "50%" }}>{key}</td>
+            <td style={{ width: "50%", textAlign: "right" }}>{base[key]}</td>
           </tr>
         ))}
       </tbody>
     </table>
-    <button className="btn_close" onClick={onClose && (() => onClose())}>Close</button>
+    <CloseButton
+      onClick={onClose && (() => onClose())}>
+        Close
+    </CloseButton>
   </div>
 );
 
@@ -52,6 +57,44 @@ PokemonInfo.propTypes = {
   onClose: PropTypes.func
 }
 
+// styles
+const Container = styled.div`
+  margin: auto;
+  width: 100%;
+`;
+const Title = styled.h1`
+  margin-bottom: 1rem;
+`;
+const Input = styled.input`
+  width: -webkit-fill-available;
+  padding: 5px;
+  font-size: medium;
+  margin-bottom: 1rem;
+`;
+const ThreeColumnsTableHeader = styled.th`
+  text-align: left;
+  font-size: large;
+  width: 33.33%;
+`;
+const ThreeColumnsTableCell = styled.td`
+  width: 33.33%;
+`;
+const ThreeColumnsTableCellRight = styled.td`
+  width: 33.33%;
+  text-align: right;
+`;
+const TableButton = styled.button`
+  width: 70%;
+  cursor: pointer;
+`;
+const CloseButton = styled.button`
+  margin-top: 1rem;
+  padding: 5px;
+  width: 150px;
+  cursor: pointer;
+`;
+
+
 function App() {
 
   const [pokemons, setPokemons] = React.useState([]);
@@ -63,16 +106,11 @@ function App() {
       .then(res => res.json())
       .then(pokemons => setPokemons(pokemons));
   }, []);
-  
+
   return (
-    <div
-      style={{
-        margin: "auto",
-        width: "100%",
-      }}
-    >
-      <h1 className="title">Pokemon Search</h1>
-      <input
+    <Container>
+      <Title>Pokemon Search</Title>
+      <Input
         value={getSearch}
         onChange={(event) => setSearch(event.target.value)}
         placeholder='Search for a pokemon...'
@@ -80,8 +118,8 @@ function App() {
       <table width="100%">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Type</th>
+            <ThreeColumnsTableHeader>Name</ThreeColumnsTableHeader>
+            <ThreeColumnsTableHeader>Type</ThreeColumnsTableHeader>
           </tr>
         </thead>
         <tbody>
@@ -103,9 +141,9 @@ function App() {
         </tbody>
       </table>
 
-      {selectedItem && <PokemonInfo {...selectedItem} onClose={() => {setSelectedItem(null)}} />}
+      {selectedItem && <PokemonInfo {...selectedItem} onClose={() => { setSelectedItem(null) }} />}
 
-    </div>
+    </Container>
   );
 }
 
