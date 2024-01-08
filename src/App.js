@@ -136,7 +136,7 @@ function App() {
   `;
 
   React.useEffect(() => {
-    fetch("http://localhost:3000/starting-react/pokemons.json")
+    fetch("starting-react/pokemons.json")
       .then(res => res.json())
       .then(pokemons => setPokemons(pokemons));
   }, []);
