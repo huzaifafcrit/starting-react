@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import PokemonTableComponent from './components/PokemonTableComponent';
 import PokemonInfoComponent from './components/PokemonInfoComponent';
 import PokemonSearchComponent from './components/PokemonSearchComponent';
-
+import PokemonContext from './contexts/PokemonContext';
 
 // styles
 const Container = styled.div`
@@ -24,13 +24,6 @@ function App() {
   const [expanded, setExpanded] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
 
-  const ThreeColumnsTableContainer = styled.div`
-    display: block;
-    overflow-y: auto;
-    width: 100%;
-    height: ${expanded ? 'calc(100vh - 150px - 280px)' : 'calc(100vh - 134px)'};
-  `;
-
   React.useEffect(() => {
     fetch("../starting-react/pokemons.json")
       .then(res => res.json())
@@ -41,30 +34,31 @@ function App() {
   }, []);
 
   return (
-    <Container>
-      <Title>Pokedex</Title>
-      
-      <PokemonSearchComponent
-        getSearch={getSearch}
-        setSearch={setSearch}
-        placeholder='Search for a pokemon...'
-      />
+    <PokemonContext.Provider
+      value={{
+        pokemons,
+        setPokemons,
+        getSearch,
+        setSearch,
+        selectedItem,
+        setSelectedItem,
+        expanded,
+        setExpanded,
+        loading,
+        setLoading
+      }}
+    >
+      <Container>
+        <Title>Pokedex</Title>
 
-      <PokemonTableComponent
-        ThreeColumnsTableContainer={ThreeColumnsTableContainer}
-        pokemons={pokemons
-          .filter((pokemon) =>
-            pokemon.name.english.toLowerCase()
-              .includes(getSearch.toLowerCase())
-          )}
-        setSelectedItem={setSelectedItem}
-        setExpanded={setExpanded}
-        loading={loading}
-      />
+        <PokemonSearchComponent />
 
-      {selectedItem && <PokemonInfoComponent {...selectedItem} onClose={() => { setSelectedItem(null); setExpanded(false); }} />}
+        <PokemonTableComponent />
 
-    </Container>
+        <PokemonInfoComponent />
+
+      </Container>
+    </PokemonContext.Provider>
   );
 }
 

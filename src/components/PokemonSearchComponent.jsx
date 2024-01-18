@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "@emotion/styled";
+import PokemonContext from "../contexts/PokemonContext";
 
 
 const Input = styled.input`
@@ -10,12 +11,15 @@ const Input = styled.input`
 `;
 
 
-const PokemonSearchComponent = ({ getSearch, setSearch }) => (
+const PokemonSearchComponent = () => {
+  const { getSearch, setSearch } = useContext(PokemonContext);
+  return (
     <Input
-        value={getSearch}
-        onChange={(event) => setSearch(event.target.value)}
-        placeholder='Search for a pokemon...'
+      value={getSearch}
+      onChange={(event) => setSearch(event.target.value)}
+      placeholder='Search for a pokemon...'
     />
-);
+  );
+};
 
 export default PokemonSearchComponent;
