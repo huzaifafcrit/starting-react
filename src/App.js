@@ -42,7 +42,7 @@ function App() {
 
   return (
     <Container>
-      <Title>Pokemon Search</Title>
+      <Title>Pokedex</Title>
       
       <PokemonSearchComponent
         getSearch={getSearch}
